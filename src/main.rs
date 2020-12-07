@@ -11,17 +11,16 @@ fn main() {
     println!("Elapsed time for insertion sort was {:?}.", before_insertion.elapsed());
 
     let mut w = v.clone();
-    // println!("{:?}", &w);
+    
     let before_quicksort = Instant::now();
     quicksort(&mut w);
     println!("Elapsed time for quicksort was {:?}.", before_quicksort.elapsed());
-    // println!("{:?}", &w);
+    
 
     let before_merged = Instant::now();
     let merged_v = merge_sort(&v);
     println!("Elapsed time for mergesort was {:?}.", before_merged.elapsed());
-    // println!("{:?}", v);
-    // println!("{:?}", merged_v);
+    
     println!("Is the original, random list in order?: {:?}", is_sorted(&v));
     println!("Was insertion sort in order?: {:?}", is_sorted(&u));
     println!("Was quicksort in order?: {:?}", is_sorted(&w));
@@ -93,12 +92,18 @@ fn quicksort<T: PartialOrd + std::fmt::Debug>(v: &mut [T]) {
     if length < 2 {
         return;
     }
-
-    // Now choose a pivot and do the organizing.
-    
-    // ...
-
-    let smaller = 99999999; // Totally wrong – you should fix this.
+    let mut smaller = 0;
+    let mut end = length-1;
+        
+    while smaller < end {
+        if v[smaller] > v[smaller + 1] {
+            v.swap(smaller, smaller+1);
+            smaller+=1;
+        }else{
+            v.swap(smaller+1, end);
+            end-=1;
+        }
+    }
 
     // Sort all the items < pivot
     quicksort(&mut v[0..smaller]);
@@ -158,7 +163,26 @@ fn merge<T: PartialOrd + std::marker::Copy + std::fmt::Debug>(xs: Vec<T>, ys: Ve
 
     // This is totally wrong and will not sort. You should replace it
     // with something useful. :)
-    return xs;
+    let mut xs_ind = 0;
+    let mut ys_ind = 0;
+    let mut output = Vec::<T>::new();
+
+    while xs_ind xs.len() && ys_ind < ys.len(){
+        if xs[xs_ind] < ys[ys_ind]{
+            output.push(xs[xs_ind]);
+            xs_ind+=1;
+        }else{
+            output.push(ys[ys_ind]);
+            ys_ind+=1;
+        }
+    }
+    if xs_ind < xs.len(){
+        output.extend(&xs[xs_ind..xs.len()]);
+    }
+    if ys_ind < ys.len(){
+        output.extend(&ys[ys_ind..ys.len()]);
+    }
+    return output
 }
 
 fn is_sorted<T: PartialOrd>(slice: &[T]) -> bool {
